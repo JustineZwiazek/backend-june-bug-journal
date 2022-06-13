@@ -559,6 +559,13 @@ export const deleteNote = async (req, res) => {
   }
 };
 
+//////// USER JOURNAL ////////
+// -- 1: Access journal page - do I need this? -- //
+const accessJournal = async (req, res) => {
+  const journal = await Journal.find({});
+  res.status(200).json({ response: journal, success: true });
+};
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
