@@ -143,3 +143,24 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+
+// --------------- Models ----------------- //
+const User = mongoose.model("User", UserSchema);
+const Plant = mongoose.model("Plant", PlantSchema);
+const Task = mongoose.model("Task", TaskSchema);
+const Note = mongoose.model("Note", NoteSchema);
+const Journal = mongoose.model("Journal", JournalSchema);
+
+// ----- Reset Veggie database finction ----- //
+if (process.env.RESET_DB) {
+  const seedDatabase = async () => {
+    await Veggies.deleteMany({});
+
+    thoughts.forEach((item) => {
+      const newVeggie = new Veggie(item);
+      newVeggie.save();
+    });
+  };
+
+  seedDatabase();
+}
