@@ -6,7 +6,7 @@ import crypto from "crypto";
 import listEndpoints from "express-list-endpoints";
 import { readFile } from "fs/promises";
 
-// import veggiesData from "./data/seeds.json" assert { type: "json" };
+import veggiesData from "./data/seeds.json" assert { type: "json" };
 // // const veggies = JSON.parse(
 // //   await readFile(new URL("./data/seeds.json", import.meta.url))
 // // );
@@ -72,7 +72,7 @@ const PlantSchema = new mongoose.Schema({
     type: String,
   },
   height: {
-    type: String,
+    type: Number,
   },
   sowing_type: {
     type: String,
@@ -90,10 +90,10 @@ const PlantSchema = new mongoose.Schema({
     type: String,
   },
   days_germination: {
-    type: String,
+    type: Number,
   },
   days_harvest: {
-    type: String,
+    type: Number,
   },
   description: {
     type: String,
@@ -171,7 +171,24 @@ const Plant = mongoose.model("Plant", PlantSchema);
 const Task = mongoose.model("Task", TaskSchema);
 const Note = mongoose.model("Note", NoteSchema);
 const Journal = mongoose.model("Journal", JournalSchema);
-// const Seed = mongoose.model("Seed", PlantSchema);
+const Seed = mongoose.model("Seed", {
+  id: Number,
+  name: String,
+  class: String,
+  type: String,
+  years: String,
+  position: String,
+  height: Number,
+  sowing_type: String,
+  sowing_start: String,
+  sowing_end: String,
+  harvest_start: String,
+  harvest_end: String,
+  days_germination: Number,
+  days_harvest: Number,
+  description: String,
+  cutivation_info: String,
+});
 const Tip = mongoose.model("Tip", {
   category: String,
   text: String,
