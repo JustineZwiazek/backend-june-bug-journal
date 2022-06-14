@@ -1,26 +1,21 @@
 [
   {
-    "id": "1",
     "category": "Harvest",
     "text": "Picked a tomato a little too soon? Place any fruit in your kitchen next to bananas and they will help ripen it by producing ethylene."
   },
   {
-    "id": "2",
     "category": "Design",
     "text": "Always make space for flowers. Flowers attract polinators and add a splash of color and whimsy to your urban garden."
   },
   {
-    "id": "3",
     "category": "Maintenence",
     "text": "Container gardens are not immune to weeds - some of them may come with your compost. Pull weeds reguraly to keep your garden looking its best."
   },
   {
-    "id": "4",
     "category": "Planting",
     "text": "Befriend mulch. Straw, grass clippings or good quality wood chips help supress the weeds and keep the soil moist for longer."
   },
   {
-    "id": "5",
     "category": "Maintenence",
     "text": "Be ready for bugs. Treating insect problems early is key. Keep some gentle products such as neem oil or diatomaceous earth on hand."
   }

@@ -3,10 +3,17 @@ import cors from "cors";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import listEndpoints from "express-list-endpoints";
 import { readFile } from "fs/promises";
 
-const veggies = JSON.parse(
-  await readFile(new URL("../data(/seeds.json)", import.meta.url))
+// import veggiesData from "./data/seeds.json" assert { type: "json" };
+// // const veggies = JSON.parse(
+// //   await readFile(new URL("./data/seeds.json", import.meta.url))
+// // );
+
+// import wisdomData from "./data/tips.json" assert { type: "json" };
+const wisdom = JSON.parse(
+  await readFile(new URL("./data/tips.json", import.meta.url))
 );
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/junebugjournal";
@@ -46,30 +53,53 @@ const UserSchema = new mongoose.Schema({
 
 // ----- Plant Schema ----- //
 const PlantSchema = new mongoose.Schema({
-  body: {
-    id: "Number",
-    name: "String",
-    class: "String",
-    type: "String",
-    years: "String",
-    position: "String",
-    height: "Number",
-    sowing_type: "String",
-    sowing_start: "String",
-    sowing_end: "String",
-    harvest_start: "String",
-    harvest_end: "String",
-    days_germination: "Number",
-    days_harvest: "String",
-    description: "String",
-    cutivation_info: "String",
-  },
-  time: {
-    type: Date,
-  },
-  createdAt: {
+  id: {
     type: Number,
-    default: () => Date.now(),
+  },
+  name: {
+    type: String,
+  },
+  class: {
+    type: String,
+  },
+  type: {
+    type: String,
+  },
+  years: {
+    type: String,
+  },
+  position: {
+    type: String,
+  },
+  height: {
+    type: String,
+  },
+  sowing_type: {
+    type: String,
+  },
+  sowing_start: {
+    type: String,
+  },
+  sowing_end: {
+    type: String,
+  },
+  harvest_start: {
+    type: String,
+  },
+  harvest_end: {
+    type: String,
+  },
+  days_germination: {
+    type: String,
+  },
+  days_harvest: {
+    type: String,
+  },
+  description: {
+    type: String,
+  },
+  cutivation_info: {
+    type: String,
   },
   // I am not sure this is the way to go:
   user: {
@@ -86,12 +116,17 @@ const TaskSchema = new mongoose.Schema({
     maxlength: 150,
     trim: true,
   },
-  time: {
-    type: Date,
-  },
   createdAt: {
     type: Number,
     default: () => Date.now(),
+  },
+  dueDate: {
+    type: String,
+    default: () => Date.now(),
+  },
+  isCompleted: {
+    type: Boolean,
+    default: false,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -101,7 +136,7 @@ const TaskSchema = new mongoose.Schema({
 
 // ----- Note Schema ----- //
 const NoteSchema = new mongoose.Schema({
-  body: {
+  text: {
     type: String,
     minlength: 8,
     maxlength: 600,
@@ -136,15 +171,32 @@ const Plant = mongoose.model("Plant", PlantSchema);
 const Task = mongoose.model("Task", TaskSchema);
 const Note = mongoose.model("Note", NoteSchema);
 const Journal = mongoose.model("Journal", JournalSchema);
+// const Seed = mongoose.model("Seed", PlantSchema);
+const Tip = mongoose.model("Tip", {
+  category: String,
+  text: String,
+});
 
-// ----- Reset Seeds database finction ----- //
+// // ----- Reset Seeds database function ----- //
+// if (process.env.RESET_DB) {
+//   const seedDatabase = async () => {
+//     await Seed.deleteMany({});
+
+//     veggiesData.forEach((veggie) => {
+//       const newSeed = new Seed(veggie);
+//       newSeed.save();
+//     });
+//   };
+//   seedDatabase();
+// }
+
+// // ----- Reset Tips database function ----- //
 if (process.env.RESET_DB) {
   const seedDatabase = async () => {
-    await Seeds.deleteMany({});
-
-    veggies.forEach((item) => {
-      const newSeed = new Seed(item);
-      newSeed.save();
+    await Tip.deleteMany({});
+    wisdomData.forEach((item) => {
+      const newTip = new Tip(item);
+      newTip.save();
     });
   };
   seedDatabase();
@@ -165,33 +217,50 @@ const authenticateUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ accessToken });
     if (user) {
+      c;
+      req.user = user;
       next();
     } else {
       res.status(401).json({
-        response: {
-          message: "Login to access the page",
-        },
+        response: "Login to access the page",
         success: false,
       });
     }
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Invalid request", response: error, success: false });
+    res.status(400).json({ response: error, success: false });
   }
 };
 
 // --------------- ENDPOINTS ----------------- //
 //////// LANDING ////////
 app.get("/", (req, res) => {
-  res.send("Welcome to the June Bug Journal API. A project by Justine Z.");
+  res.send(listEndpoints(app));
+});
+
+// //////// SEED LIST ////////
+// app.get("/seeds", async (req, res) => {
+//   const allSeeds = await Seed.find({});
+//   res.status(200).json({
+//     data: allSeeds,
+//     success: true,
+//   });
+// });
+
+//////// RANDOM TIP ////////
+app.get("/tips", async (req, res) => {
+  const Tips = await Tip.find({});
+  const getRandomTip = () => Tips[Math.floor(Math.random() * Tips.length)];
+  const random = getRandomTip();
+  res.status(200).json({
+    response: random,
+    success: true,
+  });
 });
 
 //////// ACCOUNT ////////
 // -- 1: Sign up -- //
-const signUp = async (req, res) => {
+app.post("/signup", async (req, res) => {
   const { name, username, password } = req.body;
-
   try {
     const salt = bcrypt.genSaltSync();
     if (password.length < 5) {
@@ -226,10 +295,10 @@ const signUp = async (req, res) => {
       success: false,
     });
   }
-};
+});
 
 // -- 2: Sign in -- //
-const signIn = async (req, res) => {
+app.post("/signin", async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -255,11 +324,12 @@ const signIn = async (req, res) => {
       .status(400)
       .json({ message: "Invalid request", response: error, success: false });
   }
-};
+});
 
 //////// PLANTS ////////
 // -- 1: Add plant -- //
-const addPlant = async (req, res) => {
+app.post("/plants/addplant", authenticateUser);
+app.post("/plants/addplant", async (req, res) => {
   const { Plant, userId } = req.body;
 
   try {
@@ -286,10 +356,11 @@ const addPlant = async (req, res) => {
       .status(400)
       .json({ message: "Invalid request", response: error, success: false });
   }
-};
+});
 
 // -- 2: Get all user plants -- //
-const getPlant = async (req, res) => {
+app.get("/plants/:userId", authenticateUser);
+app.get("/plants/:userId", async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -312,10 +383,11 @@ const getPlant = async (req, res) => {
       .status(400)
       .json({ messe: "Invalid request", response: error, success: false });
   }
-};
+});
 
 // -- 3: Delete plant -- //
-const deletePlant = async (req, res) => {
+app.put("/plants/:plantId/delete", authenticateUser);
+app.put("/plants/:plantId/delete", async (req, res) => {
   const { plantId } = req.params;
 
   try {
@@ -332,11 +404,12 @@ const deletePlant = async (req, res) => {
       .status(400)
       .json({ message: "Invalid request", response: error, success: false });
   }
-};
+});
 
 //////// TASKS ////////
 // -- 1: Add task -- //
-const addTask = async (req, res) => {
+app.post("/tasks/addtask", authenticateUser);
+app.post("/tasks/addtask", async (req, res) => {
   const { task, userId } = req.body;
 
   try {
@@ -364,10 +437,11 @@ const addTask = async (req, res) => {
       .status(400)
       .json({ message: "Invalid request", response: error, success: false });
   }
-};
+});
 
 // -- 2: Get user tasks -- //
-const getTask = async (req, res) => {
+app.get("/tasks/:userId", authenticateUser);
+app.get("/tasks/:userId", async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -390,10 +464,11 @@ const getTask = async (req, res) => {
       .status(400)
       .json({ messe: "Invalid request", response: error, success: false });
   }
-};
+});
 
 // -- 3: Edit a task -- //
-const editTask = async (req, res) => {
+app.patch("/tasks/:taskId/edit", authenticateUser);
+app.patch("/tasks/:taskId/edit", async (req, res) => {
   const { taskId } = req.params;
   const { task } = req.body;
 
@@ -418,10 +493,11 @@ const editTask = async (req, res) => {
       success: false,
     });
   }
-};
+});
 
 // -- 4: Delete a task -- //
-const deleteTask = async (req, res) => {
+app.post("/tasks/:taskId/delete", authenticateUser);
+app.post("/tasks/:taskId/delete", async (req, res) => {
   const { taskId } = req.params;
 
   try {
@@ -436,10 +512,10 @@ const deleteTask = async (req, res) => {
       .status(400)
       .json({ message: "Invalid request", response: error, success: false });
   }
-};
+});
 
 // -- 5: Complete a task -- //
-const completeTask = async (req, res) => {
+app.patch("/tasks/:taskId/done", async (req, res) => {
   const { taskId } = req.params;
   const { done } = req.body;
 
@@ -455,11 +531,12 @@ const completeTask = async (req, res) => {
       .status(400)
       .json({ message: "Invalid request", response: error, success: false });
   }
-};
+});
 
 //////// NOTES ////////
 // -- 1: Add note -- //
-const addNote = async (req, res) => {
+app.post("/notes/addnote", authenticateUser);
+app.post("/notes/addnote", async (req, res) => {
   const { note, userId } = req.body;
 
   try {
@@ -485,10 +562,11 @@ const addNote = async (req, res) => {
       .status(400)
       .json({ message: "Invalid request", response: error, success: false });
   }
-};
+});
 
 // -- 2: Get all user notes -- //
-const getNote = async (req, res) => {
+app.get("/notes/:userId", authenticateUser);
+app.get("/notes/:userId", async (req, res) => {
   const { userId } = req.params;
 
   try {
@@ -511,10 +589,11 @@ const getNote = async (req, res) => {
       .status(400)
       .json({ messe: "Invalid request", response: error, success: false });
   }
-};
+});
 
 // -- 3: Edit a note -- //
-export const editNote = async (req, res) => {
+app.patch("/notes/:noteId/edit", authenticateUser);
+app.patch("/notes/:noteId/edit", async (req, res) => {
   const { NoteId } = req.params;
   const { note } = req.body;
 
@@ -539,10 +618,11 @@ export const editNote = async (req, res) => {
       success: false,
     });
   }
-};
+});
 
 // -- 4: Delete a note -- //
-export const deleteNote = async (req, res) => {
+app.post("/notes/:noteId/delete", authenticateUser);
+app.post("/notes/:noteId/delete", async (req, res) => {
   const { noteId } = req.params;
 
   try {
@@ -557,14 +637,15 @@ export const deleteNote = async (req, res) => {
       .status(400)
       .json({ message: "Invalid request", response: error, success: false });
   }
-};
+});
 
-//////// USER JOURNAL ////////
+////// USER JOURNAL ////////
 // -- 1: Access journal page - do I need this? -- //
-const accessJournal = async (req, res) => {
+app.post("/journal", authenticateUser);
+app.post("/journal", async (req, res) => {
   const journal = await Journal.find({});
   res.status(200).json({ response: journal, success: true });
-};
+});
 
 // Start the server
 app.listen(port, () => {
