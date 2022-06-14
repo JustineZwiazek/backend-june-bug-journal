@@ -6,15 +6,15 @@ import crypto from "crypto";
 import listEndpoints from "express-list-endpoints";
 import { readFile } from "fs/promises";
 
-import veggiesData from "./data/seeds.json" assert { type: "json" };
-// // const veggies = JSON.parse(
-// //   await readFile(new URL("./data/seeds.json", import.meta.url))
-// // );
+// import veggiesData from "./data/seeds.json" assert { type: "json" };
+const veggies = JSON.parse(
+  await readFile(new URL("./data/seeds.json", import.meta.url))
+);
 
 // import wisdomData from "./data/tips.json" assert { type: "json" };
-const wisdom = JSON.parse(
-  await readFile(new URL("./data/tips.json", import.meta.url))
-);
+// const wisdom = JSON.parse(
+//   await readFile(new URL("./data/tips.json", import.meta.url))
+// );
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/junebugjournal";
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -195,29 +195,29 @@ const Tip = mongoose.model("Tip", {
 });
 
 // // ----- Reset Seeds database function ----- //
-// if (process.env.RESET_DB) {
-//   const seedDatabase = async () => {
-//     await Seed.deleteMany({});
-
-//     veggiesData.forEach((veggie) => {
-//       const newSeed = new Seed(veggie);
-//       newSeed.save();
-//     });
-//   };
-//   seedDatabase();
-// }
-
-// // ----- Reset Tips database function ----- //
 if (process.env.RESET_DB) {
   const seedDatabase = async () => {
-    await Tip.deleteMany({});
-    wisdomData.forEach((item) => {
-      const newTip = new Tip(item);
-      newTip.save();
+    await Seed.deleteMany({});
+
+    veggies.forEach((veggie) => {
+      const newSeed = new Seed(veggie);
+      newSeed.save();
     });
   };
   seedDatabase();
 }
+
+// // ----- Reset Tips database function ----- //
+// if (process.env.RESET_DB) {
+//   const seedDatabase = async () => {
+//     await Tip.deleteMany({});
+//     wisdom.forEach((item) => {
+//       const newTip = new Tip(item);
+//       newTip.save();
+//     });
+//   };
+//   seedDatabase();
+// }
 
 // ----- Port ----- //
 const port = process.env.PORT || 8080;
@@ -255,24 +255,24 @@ app.get("/", (req, res) => {
 });
 
 // //////// SEED LIST ////////
-// app.get("/seeds", async (req, res) => {
-//   const allSeeds = await Seed.find({});
-//   res.status(200).json({
-//     data: allSeeds,
-//     success: true,
-//   });
-// });
-
-//////// RANDOM TIP ////////
-app.get("/tips", async (req, res) => {
-  const Tips = await Tip.find({});
-  const getRandomTip = () => Tips[Math.floor(Math.random() * Tips.length)];
-  const random = getRandomTip();
+app.get("/seeds", async (req, res) => {
+  const allSeeds = await Seed.find({});
   res.status(200).json({
-    response: random,
+    data: allSeeds,
     success: true,
   });
 });
+
+//////// RANDOM TIP ////////
+// app.get("/tips", async (req, res) => {
+//   const Tips = await Tip.find({});
+//   const getRandomTip = () => Tips[Math.floor(Math.random() * Tips.length)];
+//   const random = getRandomTip();
+//   res.status(200).json({
+//     response: random,
+//     success: true,
+//   });
+// });
 
 //////// ACCOUNT ////////
 // -- 1: Sign up -- //
