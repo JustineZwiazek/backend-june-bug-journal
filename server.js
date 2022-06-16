@@ -345,8 +345,8 @@ app.post("/signin", async (req, res) => {
 
 //////// PLANTS ////////
 // -- 1: Add plant -- //
-app.post("/plants/addplant", authenticateUser);
-app.post("/plants/addplant", async (req, res) => {
+app.post("/plants", authenticateUser);
+app.post("/plants", async (req, res) => {
   const { Plant, userId } = req.body;
 
   try {
@@ -425,8 +425,8 @@ app.put("/plants/:plantId/delete", async (req, res) => {
 
 //////// TASKS ////////
 // -- 1: Add task -- //
-app.post("/tasks/addtask", authenticateUser);
-app.post("/tasks/addtask", async (req, res) => {
+app.post("/tasks", authenticateUser);
+app.post("/tasks", async (req, res) => {
   const { task, userId } = req.body;
 
   try {
@@ -552,8 +552,8 @@ app.patch("/tasks/:taskId/done", async (req, res) => {
 
 //////// NOTES ////////
 // -- 1: Add note -- //
-app.post("/notes/addnote", authenticateUser);
-app.post("/notes/addnote", async (req, res) => {
+app.post("/notes", authenticateUser);
+app.post("/notes", async (req, res) => {
   const { note, userId } = req.body;
 
   try {
