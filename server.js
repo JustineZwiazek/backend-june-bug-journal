@@ -346,7 +346,7 @@ app.post("/signin", async (req, res) => {
 //////// PLANTS ////////
 // -- 1: Add plant -- //
 app.post("/plants", authenticateUser);
-app.post("/plants", async (req, res) => {
+app.post("/plant", async (req, res) => {
   const { Plant, userId } = req.body;
 
   try {
