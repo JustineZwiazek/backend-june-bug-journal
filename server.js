@@ -440,26 +440,8 @@ app.get("/tasks/:userId", authenticateUser);
 app.get("/tasks/:userId", async (req, res) => {
   const { userId } = req.params;
 
-  try {
-    const queriedTasks = await Task.find({
-      user: userId,
-    });
-
-    if (queriedTasks) {
-      res
-        .status(200)
-        .json({ response: queriedTasks, user: userId, success: true });
-    } else {
-      res.status(404).json({
-        message: "Could not find tasks",
-        success: false,
-      });
-    }
-  } catch (error) {
-    res
-      .status(400)
-      .json({ messe: "Invalid request", response: error, success: false });
-  }
+  const tasks = await Task.find({ user: userId }).sort({ dueDate: "desc" });
+  res.status(201).json({ response: tasks, success: true });
 });
 
 // -- 3: Edit a task -- //
