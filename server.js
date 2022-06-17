@@ -110,15 +110,11 @@ const PlantSchema = new mongoose.Schema({
 
 // ----- Task Schema ----- //
 const TaskSchema = new mongoose.Schema({
-  body: {
+  text: {
     type: String,
     minlength: 3,
     maxlength: 150,
     trim: true,
-  },
-  createdAt: {
-    type: Number,
-    default: () => Date.now(),
   },
   dueDate: {
     type: String,
@@ -144,10 +140,6 @@ const NoteSchema = new mongoose.Schema({
   },
   time: {
     type: Date,
-  },
-  createdAt: {
-    type: Number,
-    default: () => Date.now(),
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -357,7 +349,6 @@ app.post("/plant", async (req, res) => {
       res.status(201).json({
         response: {
           plant: newPlant.plant,
-          creationDay: newPlant.createdAt,
           owner: newPlant.user.username,
         },
         success: true,
@@ -427,22 +418,17 @@ app.delete("/plants/:plantId/delete", async (req, res) => {
 // -- 1: Add task -- //
 app.post("/tasks", authenticateUser);
 app.post("/tasks", async (req, res) => {
-  const { task, userId } = req.body;
+  const { text, user, dueDate } = req.body;
 
   try {
-    const queriedId = await User.findById(userId);
-    const newTask = await new Task({ task, user: queriedId }).save();
+    const newTask = await new Task({
+      text,
+      dueDate,
+      user: req.user,
+    }).save();
 
     if (newTask) {
-      res.status(201).json({
-        response: {
-          task: newTask.task,
-          creationDay: newTask.createdAt,
-          done: newTask.done,
-          author: newTask.user.username,
-        },
-        success: true,
-      });
+      res.status(201).json({ response: newTodo, success: true });
     } else {
       res.status(404).json({
         message: "Could not find task",
