@@ -403,8 +403,8 @@ app.get("/plants/:userId", async (req, res) => {
 });
 
 // -- 3: Delete plant -- //
-app.put("/plants/:plantId/delete", authenticateUser);
-app.put("/plants/:plantId/delete", async (req, res) => {
+app.delete("/plants/:plantId/delete", authenticateUser);
+app.delete("/plants/:plantId/delete", async (req, res) => {
   const { plantId } = req.params;
 
   try {
@@ -513,8 +513,8 @@ app.patch("/tasks/:taskId/edit", async (req, res) => {
 });
 
 // -- 4: Delete a task -- //
-app.post("/tasks/:taskId/delete", authenticateUser);
-app.post("/tasks/:taskId/delete", async (req, res) => {
+app.delete("/tasks/:taskId/delete", authenticateUser);
+app.delete("/tasks/:taskId/delete", async (req, res) => {
   const { taskId } = req.params;
 
   try {
@@ -638,8 +638,8 @@ app.patch("/notes/:noteId/edit", async (req, res) => {
 });
 
 // -- 4: Delete a note -- //
-app.post("/notes/:noteId/delete", authenticateUser);
-app.post("/notes/:noteId/delete", async (req, res) => {
+app.delete("/notes/:noteId/delete", authenticateUser);
+app.delete("/notes/:noteId/delete", async (req, res) => {
   const { noteId } = req.params;
 
   try {
