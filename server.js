@@ -138,8 +138,9 @@ const NoteSchema = new mongoose.Schema({
     maxlength: 600,
     trim: true,
   },
-  time: {
-    type: Date,
+  dueDate: {
+    type: String,
+    default: () => Date.now(),
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -426,19 +427,11 @@ app.post("/tasks", async (req, res) => {
       dueDate,
       user: req.user,
     }).save();
-
-    if (newTask) {
-      res.status(201).json({ response: newTodo, success: true });
-    } else {
-      res.status(404).json({
-        message: "Could not find task",
-        success: false,
-      });
-    }
+    res.status(201).json({ response: newTask, success: true });
   } catch (error) {
     res
       .status(400)
-      .json({ message: "Invalid request", response: error, success: false });
+      .json({ message: "Bad request", response: error, success: false });
   }
 });
 
