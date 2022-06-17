@@ -445,31 +445,21 @@ app.get("/tasks/:userId", async (req, res) => {
 });
 
 // -- 3: Edit a task -- //
-app.patch("/tasks/:taskId/edit", authenticateUser);
+app.patch("/tasks/:taskId", authenticateUser);
 app.patch("/tasks/:taskId/edit", async (req, res) => {
   const { taskId } = req.params;
-  const { task } = req.body;
 
   try {
-    const updatedTask = await Task.findByIdAndUpdate(
-      taskId,
-      { task },
-      { new: true }
-    );
+    const updatedTask = await Task.findOneAndUpdate({ _id: taskId }, req.body, {
+      new: true,
+    });
     if (updatedTask) {
       res.status(200).json({ response: updatedTask, success: true });
     } else {
-      res.status(404).json({
-        message: "Could not find task",
-        success: false,
-      });
+      res.status(400).json({ message: "Task not found", success: false });
     }
   } catch (error) {
-    res.status(400).json({
-      message: "Invalid request",
-      error: error,
-      success: false,
-    });
+    res.status(400).json({ message: "Could not update task", success: false });
   }
 });
 
@@ -483,31 +473,27 @@ app.delete("/tasks/:taskId/delete", async (req, res) => {
     if (deleteTask) {
       res.status(200).json({ response: deleteTask, success: true });
     } else {
-      res.status(404).json({ response: "Could not find task", success: false });
+      res.status(404).json({ message: "Could not find task", success: false });
     }
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Invalid request", response: error, success: false });
+    res.status(400).json({ message: "Invalid request", success: false });
   }
 });
 
 // -- 5: Complete a task -- //
 app.patch("/tasks/:taskId/done", async (req, res) => {
   const { taskId } = req.params;
-  const { done } = req.body;
+  const { isCompleted } = req.body;
 
   try {
-    const updatedDone = await Task.findByIdAndUpdate(
+    const updateIsComplete = await Task.findByIdAndUpdate(
       { _id: taskId },
-      { done },
+      { isCompleted },
       { new: true }
     );
-    res.status(200).json({ response: updatedDone, success: true });
+    res.status(200).json({ response: updateIsComplete, success: true });
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Invalid request", response: error, success: false });
+    res.status(400).json({ response: error, success: false });
   }
 });
 
