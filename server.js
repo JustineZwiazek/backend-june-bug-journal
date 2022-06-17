@@ -538,7 +538,7 @@ app.patch("/tasks/:taskId/done", async (req, res) => {
 
   try {
     const updatedDone = await Task.findByIdAndUpdate(
-      taskId,
+      { _id: taskId },
       { done },
       { new: true }
     );
