@@ -616,8 +616,8 @@ app.patch("/notes/:noteId/edit", async (req, res) => {
 
   try {
     const updatedNote = await Note.findByIdAndUpdate(
-      noteId,
-      { Note },
+      { _id: noteId },
+      { text },
       { new: true }
     );
     if (updatedNote) {
