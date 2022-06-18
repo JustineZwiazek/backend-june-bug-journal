@@ -36,19 +36,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: () => crypto.randomBytes(128).toString("hex"),
   },
-  location: {
-    type: String,
-  },
-  name: {
-    type: String,
-    trim: true,
-    minlength: 2,
-  },
-  created: {
-    type: Number,
-    default: () => Date.now(),
-    timestamps: true,
-  },
 });
 
 // ----- Plant Schema ----- //
@@ -227,7 +214,6 @@ const authenticateUser = async (req, res, next) => {
   try {
     const user = await User.findOne({ accessToken });
     if (user) {
-      c;
       req.user = user;
       next();
     } else {
