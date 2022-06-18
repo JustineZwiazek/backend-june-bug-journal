@@ -110,7 +110,7 @@ const PlantSchema = new mongoose.Schema({
 
 // ----- Task Schema ----- //
 const TaskSchema = new mongoose.Schema({
-  text: {
+  message: {
     type: String,
     minlength: 3,
     maxlength: 150,
@@ -419,11 +419,11 @@ app.delete("/plants/:plantId/delete", async (req, res) => {
 // -- 1: Add task -- //
 app.post("/tasks", authenticateUser);
 app.post("/tasks", async (req, res) => {
-  const { text, user, dueDate } = req.body;
+  const { message, user, dueDate } = req.body;
 
   try {
     const newTask = await new Task({
-      text,
+      message,
       dueDate,
       user: req.user,
     }).save();
@@ -464,8 +464,8 @@ app.patch("/tasks/:taskId/edit", async (req, res) => {
 });
 
 // -- 4: Delete a task -- //
-app.delete("/tasks/:taskId/delete", authenticateUser);
-app.delete("/tasks/:taskId/delete", async (req, res) => {
+app.delete("/tasks/:taskId/", authenticateUser);
+app.delete("/tasks/:taskId/", async (req, res) => {
   const { taskId } = req.params;
 
   try {
@@ -481,7 +481,7 @@ app.delete("/tasks/:taskId/delete", async (req, res) => {
 });
 
 // -- 5: Complete a task -- //
-app.patch("/tasks/:taskId/done", async (req, res) => {
+app.patch("/tasks/:taskId/completed", async (req, res) => {
   const { taskId } = req.params;
   const { isCompleted } = req.body;
 
