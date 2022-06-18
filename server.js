@@ -132,7 +132,7 @@ const TaskSchema = new mongoose.Schema({
 
 // ----- Note Schema ----- //
 const NoteSchema = new mongoose.Schema({
-  text: {
+  message: {
     type: String,
     minlength: 8,
     maxlength: 600,
@@ -339,7 +339,7 @@ app.post("/signin", async (req, res) => {
 //////// PLANTS ////////
 // -- 1: Add plant -- //
 app.post("/plants", authenticateUser);
-app.post("/plant", async (req, res) => {
+app.post("/plants", async (req, res) => {
   const { Plant, userId } = req.body;
 
   try {
@@ -501,26 +501,11 @@ app.patch("/tasks/:taskId/completed", async (req, res) => {
 // -- 1: Add note -- //
 app.post("/notes", authenticateUser);
 app.post("/notes", async (req, res) => {
-  const { note, userId } = req.body;
+  const { user, message, dueDate } = req.body;
 
   try {
-    const queriedId = await User.findById(userId);
-    const newNote = await new Note({ note, user: queriedId }).save();
-
-    if (newNote) {
-      res.status(201).json({
-        response: {
-          note: newNote.note,
-          creationDay: newNote.createdAt,
-        },
-        success: true,
-      });
-    } else {
-      res.status(404).json({
-        message: "Could not find note",
-        success: false,
-      });
-    }
+    const newNote = await new Note({ message, dueDate, user: req.user }).save();
+    res.status(201).json({ response: newNote, success: true });
   } catch (error) {
     res
       .status(400)
@@ -533,39 +518,22 @@ app.get("/notes/:userId", authenticateUser);
 app.get("/notes/:userId", async (req, res) => {
   const { userId } = req.params;
 
-  try {
-    const queriedNotes = await Note.find({
-      user: userId,
-    });
-
-    if (queriedNotes) {
-      res
-        .status(200)
-        .json({ response: queriedNotes, user: userId, success: true });
-    } else {
-      res.status(404).json({
-        message: "Could not find notes",
-        success: false,
-      });
-    }
-  } catch (error) {
-    res
-      .status(400)
-      .json({ messe: "Invalid request", response: error, success: false });
-  }
+  const notes = await Note.find({ user: userId });
+  res.status(201).json({ response: notes, success: true });
 });
 
 // -- 3: Edit a note -- //
-app.patch("/notes/:noteId/edit", authenticateUser);
+app.patch("/notes/:noteId/", authenticateUser);
 app.patch("/notes/:noteId/edit", async (req, res) => {
-  const { NoteId } = req.params;
-  const { note } = req.body;
+  const { noteId } = req.params;
 
   try {
     const updatedNote = await Note.findByIdAndUpdate(
       { _id: noteId },
-      { text },
-      { new: true }
+      req.body,
+      {
+        new: true,
+      }
     );
     if (updatedNote) {
       res.status(200).json({ response: updatedNote, success: true });
@@ -585,21 +553,19 @@ app.patch("/notes/:noteId/edit", async (req, res) => {
 });
 
 // -- 4: Delete a note -- //
-app.delete("/notes/:noteId/delete", authenticateUser);
-app.delete("/notes/:noteId/delete", async (req, res) => {
+app.delete("/notes/:noteId/", authenticateUser);
+app.delete("/notes/:noteId/", async (req, res) => {
   const { noteId } = req.params;
 
   try {
-    const deleteNote = await Note.findOneAndDelete({ _id: NoteId });
-    if (deleteNote) {
-      res.status(200).json({ response: deleteNote, success: true });
+    const deletedNote = await Note.findOneAndDelete({ _id: noteId });
+    if (deletedNote) {
+      res.status(200).json({ response: deletedNote, success: true });
     } else {
-      res.status(404).json({ response: "Could not find note", success: false });
+      res.status(404).json({ message: "Could not find note", success: false });
     }
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Invalid request", response: error, success: false });
+    res.status(400).json({ message: "Invalid request", success: false });
   }
 });
 
