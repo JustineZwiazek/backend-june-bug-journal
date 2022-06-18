@@ -236,11 +236,16 @@ app.get("/", (req, res) => {
 // //////// SEED LIST ////////
 app.get("/seeds", async (req, res) => {
   const allSeeds = await Seed.find({});
-  res.status(200).json({
-    data: allSeeds,
-    success: true,
-  });
+  res.status(200).json(allSeeds);
 });
+
+// app.get("/seeds", async (req, res) => {
+//   const allSeeds = await Seed.find({});
+//   res.status(200).json({
+//     response: allSeeds,
+//     success: true,
+//   });
+// });
 
 //////// RANDOM TIP ////////
 app.get("/tips", async (req, res) => {
