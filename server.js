@@ -93,6 +93,10 @@ const PlantSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  date_planted: {
+    type: Date,
+    default: () => Date.now,
+  },
 });
 
 // ----- Task Schema ----- //
@@ -331,26 +335,18 @@ app.post("/signin", async (req, res) => {
 // -- 1: Add plant -- //
 app.post("/plants", authenticateUser);
 app.post("/plants", async (req, res) => {
-  const { Plant, userId } = req.body;
+  const { user, name, type, days_harvest, date_planted } = req.body;
 
   try {
-    const queriedId = await User.findById(userId);
-    const newPlant = await new Plant({ plant, user: queriedId }).save();
-
-    if (newPlant) {
-      res.status(201).json({
-        response: {
-          plant: newPlant.plant,
-          owner: newPlant.user.username,
-        },
-        success: true,
-      });
-    } else {
-      res.status(404).json({
-        message: "Could not find plant",
-        success: false,
-      });
-    }
+    const newPlant = await new Plant({
+      user,
+      name,
+      type,
+      days_harvest,
+      date_planted,
+      user: req.user,
+    }).save();
+    res.status(201).json({ response: newPlant, success: true });
   } catch (error) {
     res
       .status(400)
@@ -363,26 +359,8 @@ app.get("/plants/:userId", authenticateUser);
 app.get("/plants/:userId", async (req, res) => {
   const { userId } = req.params;
 
-  try {
-    const queriedPlants = await Plant.find({
-      user: userId,
-    });
-
-    if (queriedPlants) {
-      res
-        .status(200)
-        .json({ response: queriedPlants, user: userId, success: true });
-    } else {
-      res.status(404).json({
-        message: "Could not find plants",
-        success: false,
-      });
-    }
-  } catch (error) {
-    res
-      .status(400)
-      .json({ messe: "Invalid request", response: error, success: false });
-  }
+  const plants = await Plant.find({ user: userId });
+  res.status(201).json({ response: plants, success: true });
 });
 
 // -- 3: Delete plant -- //
@@ -395,14 +373,10 @@ app.delete("/plants/:plantId/delete", async (req, res) => {
     if (deletePlant) {
       res.status(200).json({ response: deletePlant, success: true });
     } else {
-      res
-        .status(404)
-        .json({ response: "Could not find plant", success: false });
+      res.status(404).json({ message: "Could not find plant", success: false });
     }
   } catch (error) {
-    res
-      .status(400)
-      .json({ message: "Invalid request", response: error, success: false });
+    res.status(400).json({ message: "Invalid request", success: false });
   }
 });
 
