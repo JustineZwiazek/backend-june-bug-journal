@@ -43,7 +43,7 @@ const PlantSchema = new mongoose.Schema({
   id: {
     type: Number,
   },
-  name: {
+  plantName: {
     type: String,
   },
   class: {
@@ -79,7 +79,7 @@ const PlantSchema = new mongoose.Schema({
   days_germination: {
     type: Number,
   },
-  days_harvest: {
+  daysHarvest: {
     type: Number,
   },
   description: {
@@ -93,7 +93,7 @@ const PlantSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  date_planted: {
+  datePlanted: {
     type: Date,
     default: () => Date.now,
   },
@@ -342,8 +342,8 @@ app.post("/plants", async (req, res) => {
       user,
       name,
       type,
-      days_harvest,
-      date_planted,
+      daysHarvest,
+      datePlanted,
       user: req.user,
     }).save();
     res.status(201).json({ response: newPlant, success: true });
