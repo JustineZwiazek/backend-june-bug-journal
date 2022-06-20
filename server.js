@@ -95,7 +95,7 @@ const PlantSchema = new mongoose.Schema({
   },
   datePlanted: {
     type: Date,
-    default: () => Date.now,
+    default: () => new Date(),
   },
 });
 
