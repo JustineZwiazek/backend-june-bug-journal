@@ -420,7 +420,7 @@ app.patch("/tasks/:taskId/completed", async (req, res) => {
       { isCompleted },
       { new: true }
     );
-    res.status(200).json({ response: updateIsComplete, success: true });
+    res.status(200).json({ response: updateIsCompleted, success: true });
   } catch (error) {
     res.status(400).json({ response: error, success: false });
   }
