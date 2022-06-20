@@ -46,47 +46,11 @@ const PlantSchema = new mongoose.Schema({
   plantName: {
     type: String,
   },
-  class: {
-    type: String,
-  },
   type: {
     type: String,
   },
-  years: {
-    type: String,
-  },
-  position: {
-    type: String,
-  },
-  height: {
-    type: Number,
-  },
-  sowing_type: {
-    type: String,
-  },
-  sowing_start: {
-    type: String,
-  },
-  sowing_end: {
-    type: String,
-  },
-  harvest_start: {
-    type: String,
-  },
-  harvest_end: {
-    type: String,
-  },
-  days_germination: {
-    type: Number,
-  },
   daysHarvest: {
     type: Number,
-  },
-  description: {
-    type: String,
-  },
-  cutivation_info: {
-    type: String,
   },
   // I am not sure this is the way to go:
   user: {
@@ -364,8 +328,8 @@ app.get("/plants/:userId", async (req, res) => {
 });
 
 // -- 3: Delete plant -- //
-app.delete("/plants/:plantId/delete", authenticateUser);
-app.delete("/plants/:plantId/delete", async (req, res) => {
+app.delete("/plants/:plantId", authenticateUser);
+app.delete("/plants/:plantId", async (req, res) => {
   const { plantId } = req.params;
 
   try {
