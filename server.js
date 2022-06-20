@@ -415,7 +415,7 @@ app.patch("/tasks/:taskId/completed", async (req, res) => {
   const { isCompleted } = req.body;
 
   try {
-    const updateIsComplete = await Task.findByIdAndUpdate(
+    const updateIsCompleted = await Task.findByIdAndUpdate(
       { _id: taskId },
       { isCompleted },
       { new: true }
