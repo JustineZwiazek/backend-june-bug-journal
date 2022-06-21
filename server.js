@@ -303,13 +303,14 @@ app.post("/signin", async (req, res) => {
 // -- 1: Add plant -- //
 app.post("/plants", authenticateUser);
 app.post("/plants", async (req, res) => {
-  const { userId, name } = req.body;
-  const findSeed = await Seed.find({ name: name });
+  const { userId, _id } = req.body;
+  const findSeed = await Seed.find({ seedId: _id });
 
   try {
     const newPlant = await new Plant({
       user: req.user,
       userId,
+      _id: findSeed._id,
       name: findSeed.name,
       type: findSeed.type,
       days_harvest: findSeed.days_harvest,
