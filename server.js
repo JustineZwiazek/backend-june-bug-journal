@@ -300,14 +300,15 @@ app.post("/signin", async (req, res) => {
 app.post("/plants", authenticateUser);
 app.post("/plants", async (req, res) => {
   const { user, name } = req.body;
-  const findPlant = Plant.find({ name: name });
+  const findSeed = Seed.find({ name: name });
+  console.log(findPlant);
 
   try {
     const newPlant = await new Plant({
       user,
-      name: findPlant.name,
-      type: findPlant.type,
-      days_harvest: findPlant.days_harvest,
+      name: findSeed.name,
+      type: findSeed.type,
+      days_harvest: findSeed.days_harvest,
       user: req.user,
     }).save();
     res.status(201).json({ response: newPlant, success: true });
