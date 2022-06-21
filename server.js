@@ -54,8 +54,8 @@ const PlantSchema = new mongoose.Schema({
   },
   // I am not sure this is the way to go:
   user: {
-    type: String,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
   },
   date: {
     type: String,
@@ -304,7 +304,7 @@ app.post("/signin", async (req, res) => {
 app.post("/plants", authenticateUser);
 app.post("/plants", async (req, res) => {
   const { userId, name } = req.body;
-  const findSeed = await Seed.find({ name: name });
+  const findSeed = await Seeds.find({ name: name });
 
   try {
     const newPlant = await new Plant({
@@ -373,7 +373,7 @@ app.get("/tasks/:userId", authenticateUser);
 app.get("/tasks/:userId", async (req, res) => {
   const { userId } = req.params;
 
-  const tasks = await Task.find({ user: userId }).sort({ dueDate: "desc" });
+  const tasks = await Task.find({ user: userId });
   res.status(201).json({ response: tasks, success: true });
 });
 
