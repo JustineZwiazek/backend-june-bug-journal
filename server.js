@@ -54,8 +54,8 @@ const PlantSchema = new mongoose.Schema({
   },
   // I am not sure this is the way to go:
   user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
+    required: true,
   },
   datePlanted: {
     type: Date,
@@ -299,17 +299,16 @@ app.post("/signin", async (req, res) => {
 // -- 1: Add plant -- //
 app.post("/plants", authenticateUser);
 app.post("/plants", async (req, res) => {
-  const { user, name } = req.body;
+  const { userId, name } = req.body;
   const findSeed = await Seed.find({ name: name });
   console.log(findSeed);
 
   try {
     const newPlant = await new Plant({
-      user,
+      userId,
       name: findSeed.name,
       type: findSeed.type,
       days_harvest: findSeed.days_harvest,
-      user: req.user,
     }).save();
     res.status(201).json({ response: newPlant, success: true });
     console.log(req.body);
