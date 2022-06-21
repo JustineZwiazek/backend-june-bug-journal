@@ -76,8 +76,8 @@ const TaskSchema = new mongoose.Schema({
     trim: true,
   },
   dueDate: {
-    type: String,
-    default: () => Date.now(),
+    type: Date,
+    default: () => new Date(),
   },
   isCompleted: {
     type: Boolean,
