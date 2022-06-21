@@ -54,8 +54,9 @@ const PlantSchema = new mongoose.Schema({
   },
   // I am not sure this is the way to go:
   user: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: "User",
   },
   datePlanted: {
     type: Date,
@@ -304,6 +305,7 @@ app.post("/plants", async (req, res) => {
 
   try {
     const newPlant = await new Plant({
+      user: req.user,
       userId,
       name: findSeed.name,
       type: findSeed.type,
