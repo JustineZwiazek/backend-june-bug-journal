@@ -57,10 +57,14 @@ const PlantSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  datePlanted: {
-    type: Date,
-    default: () => new Date(),
+  dueDate: {
+    type: String,
+    default: () => Date.now(),
   },
+  // datePlanted: {
+  //   type: Date,
+  //   default: () => new Date(),
+  // },
 });
 
 // ----- Task Schema ----- //
@@ -348,7 +352,7 @@ app.delete("/plants/:plantId", async (req, res) => {
 // -- 1: Add task -- //
 app.post("/tasks", authenticateUser);
 app.post("/tasks", async (req, res) => {
-  const { message, user, dueDate } = req.body;
+  const { user, message, dueDate } = req.body;
 
   try {
     const newTask = await new Task({
