@@ -311,6 +311,7 @@ app.post("/plants", async (req, res) => {
       user: req.user,
     }).save();
     res.status(201).json({ response: newPlant, success: true });
+    console.log(req.body);
   } catch (error) {
     res
       .status(400)
