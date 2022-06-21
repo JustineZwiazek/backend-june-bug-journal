@@ -54,9 +54,8 @@ const PlantSchema = new mongoose.Schema({
   },
   // I am not sure this is the way to go:
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     required: true,
-    ref: "User",
   },
   datePlanted: {
     type: Date,
