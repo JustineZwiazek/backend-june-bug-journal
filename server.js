@@ -307,7 +307,7 @@ app.post("/plants", async (req, res) => {
       user,
       name: findPlant.name,
       type: findPlant.type,
-      daysHarvest: findPlant.daysHarvest,
+      days_harvest: findPlant.days_harvest,
       user: req.user,
     }).save();
     res.status(201).json({ response: newPlant, success: true });
