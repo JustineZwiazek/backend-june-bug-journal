@@ -57,7 +57,7 @@ const PlantSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  dueDate: {
+  datePlanted: {
     type: String,
     default: () => Date.now(),
   },
