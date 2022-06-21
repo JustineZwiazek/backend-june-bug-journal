@@ -43,13 +43,13 @@ const PlantSchema = new mongoose.Schema({
   id: {
     type: Number,
   },
-  plantName: {
+  name: {
     type: String,
   },
   type: {
     type: String,
   },
-  daysHarvest: {
+  days_harvest: {
     type: Number,
   },
   // I am not sure this is the way to go:
