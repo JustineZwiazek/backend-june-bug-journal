@@ -53,18 +53,18 @@ const PlantSchema = new mongoose.Schema({
     type: Number,
   },
   // I am not sure this is the way to go:
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  date: {
+  userId: {
     type: String,
-    default: () => Date.now(),
   },
-  // datePlanted: {
-  //   type: Date,
-  //   default: () => new Date(),
   // },
+  // date: {
+  //   type: String,
+  //   default: () => Date.now(),
+  // },
+  datePlanted: {
+    type: Date,
+    default: () => new Date(),
+  },
 });
 
 // ----- Task Schema ----- //
@@ -76,8 +76,8 @@ const TaskSchema = new mongoose.Schema({
     trim: true,
   },
   dueDate: {
-    type: Date,
-    default: () => new Date(),
+    type: String,
+    default: () => Date.now(),
   },
   isCompleted: {
     type: Boolean,
@@ -304,11 +304,10 @@ app.post("/signin", async (req, res) => {
 app.post("/plants", authenticateUser);
 app.post("/plants", async (req, res) => {
   const { userId, name } = req.body;
-  const findSeed = await Seed.find({ name: name });
+  const findSeed = await Seed.findOne({ name: name });
 
   try {
     const newPlant = await new Plant({
-      user: req.user,
       userId,
       name: findSeed.name,
       type: findSeed.type,
