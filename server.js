@@ -214,7 +214,7 @@ app.get("/seeds", async (req, res) => {
 app.get("/seeds/id/:id", async (req, res) => {
   const { id } = req.params;
 
-  let seedId = seedDatabase.find((item) => item.id === id);
+  let seedId = allSeeds.find((item) => item.id === id);
 
   if (!seedId) {
     res.status(404).send(`ID ${id} not found`);
