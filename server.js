@@ -214,8 +214,13 @@ app.get("/seeds", async (req, res) => {
 app.get("/seeds/id/:id", async (req, res) => {
   const { id } = req.params;
 
-  const oneSeed = await Seed.find({ seeds: id });
-  res.status(201).json({ response: oneSeed, success: true });
+  let seedId = allSeeds.find((item) => item.id === id);
+
+  if (!seedId) {
+    res.status(404).send(`ID ${id} not found`);
+  } else {
+    res.json(seedId);
+  }
 });
 
 //////// RANDOM TIP ////////
