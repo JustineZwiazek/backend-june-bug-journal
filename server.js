@@ -211,17 +211,19 @@ app.get("/seeds", async (req, res) => {
   res.status(200).json(allSeeds);
 });
 
-app.get("/seeds/id/:id", async (req, res) => {
-  const { id } = req.params;
+// Will come back later to the single seed endpoint, Heroku kept crashing and I ran out of time.
 
-  let seedId = allSeeds.find((item) => item.id === id);
+// app.get("/seeds/id/:id", async (req, res) => {
+//   const { id } = req.params;
 
-  if (!seedId) {
-    res.status(404).send(`ID ${id} not found`);
-  } else {
-    res.json(seedId);
-  }
-});
+//   let seedId = allSeeds.find((item) => item.id === id);
+
+//   if (!seedId) {
+//     res.status(404).send(`ID ${id} not found`);
+//   } else {
+//     res.json(seedId);
+//   }
+// });
 
 //////// RANDOM TIP ////////
 app.get("/tips", async (req, res) => {
