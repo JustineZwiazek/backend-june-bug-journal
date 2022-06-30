@@ -378,7 +378,7 @@ app.get("/tasks/:userId", authenticateUser);
 app.get("/tasks/:userId", async (req, res) => {
   const { userId } = req.params;
 
-  const tasks = await Task.find({ user: userId }).sort({ dueDate: "desc" });
+  const tasks = await Task.find({ user: userId }).sort({ dueDate: "asc" });
   res.status(201).json({ response: tasks, success: true });
 });
 
