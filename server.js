@@ -205,10 +205,20 @@ app.get("/", (req, res) => {
   res.send(listEndpoints(app));
 });
 
-// //////// SEED LIST ////////
+// //////// SEEDS LIST ////////
 app.get("/seeds", async (req, res) => {
   const allSeeds = await Seed.find({});
   res.status(200).json(allSeeds);
+});
+
+app.get("/seeds/id/:id", async (req, res) => {
+  const seedById = await Seed.findOne({ id: req.params._id });
+
+  if (!seedById) {
+    res.status(404).json("Sorry, could not find a the seed");
+  } else {
+    res.status(200).json(seedById);
+  }
 });
 
 // app.get("/seeds", async (req, res) => {
