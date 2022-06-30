@@ -212,7 +212,8 @@ app.get("/seeds", async (req, res) => {
 });
 
 app.get("/seeds/id/:id", async (req, res) => {
-  const seedById = await Seed.findOne({ id: req.params._id });
+  const { id } = req.params;
+  let seedById = await Seed.findOne((item) => item.id === id);
 
   if (!seedById) {
     res.status(404).json("Sorry, could not find a the seed");
@@ -220,14 +221,6 @@ app.get("/seeds/id/:id", async (req, res) => {
     res.status(200).json(seedById);
   }
 });
-
-// app.get("/seeds", async (req, res) => {
-//   const allSeeds = await Seed.find({});
-//   res.status(200).json({
-//     response: allSeeds,
-//     success: true,
-//   });
-// });
 
 //////// RANDOM TIP ////////
 app.get("/tips", async (req, res) => {
