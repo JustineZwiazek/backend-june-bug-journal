@@ -78,6 +78,7 @@ const TaskSchema = new mongoose.Schema({
   dueDate: {
     type: String,
     default: () => Date.now(),
+    required: true,
   },
   isCompleted: {
     type: Boolean,
@@ -100,6 +101,7 @@ const NoteSchema = new mongoose.Schema({
   dueDate: {
     type: String,
     default: () => Date.now(),
+    required: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
