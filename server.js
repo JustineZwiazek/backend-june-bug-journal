@@ -213,7 +213,7 @@ app.get("/seeds", async (req, res) => {
 
 app.get("/seeds/id/:id", async (req, res) => {
   const { id } = req.params;
-  let seedById = await Seed.findOne((item) => item.id === id);
+  let seedById = await veggies.findOne((item) => item.id === id);
 
   if (!seedById) {
     res.status(404).json("Sorry, could not find a the seed");
