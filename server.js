@@ -450,7 +450,7 @@ app.get("/notes/:userId", authenticateUser);
 app.get("/notes/:userId", async (req, res) => {
   const { userId } = req.params;
 
-  const notes = await Note.find({ user: userId });
+  const notes = await Note.find({ user: userId }).sort({ dueDate: "desc" });
   res.status(201).json({ response: notes, success: true });
 });
 
