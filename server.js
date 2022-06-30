@@ -213,13 +213,9 @@ app.get("/seeds", async (req, res) => {
 
 app.get("/seeds/id/:id", async (req, res) => {
   const { id } = req.params;
-  let seedById = await veggies.findOne((item) => item.id === id);
 
-  if (!seedById) {
-    res.status(404).json("Sorry, could not find a the seed");
-  } else {
-    res.status(200).json(seedById);
-  }
+  const oneSeed = await Seed.find({ seeds: id });
+  res.status(201).json({ response: oneSeed, success: true });
 });
 
 //////// RANDOM TIP ////////
